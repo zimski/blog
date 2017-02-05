@@ -32,7 +32,7 @@ highlighter: rouge
 # analytics-piwik-id: 1
 
 # if you don't want comments in your posts, set to false
-# disqus: mydisqus
+disqus: true
 
 # if you don't have any of social below, comment the line
 # facebook:
@@ -54,7 +54,7 @@ email: chadda.chakib@gmail.com
 authors:
     zimski:
         name: Chadda chakib
-        bio: A Man who travels the world eating noodles
+        bio: Slapping the keyboard until something good happens!
         external-image: false
         picture: assets/images/profile.png
         twitter: zimski
