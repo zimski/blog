@@ -2,8 +2,8 @@
 title: "JavaScript generators"
 layout: post
 date: 2017-01-01 22:48
-image: /assets/images/markdown.jpg
-headerImage: false
+image: /assets/images/js_gen.jpg
+headerImage: true
 tag:
 - javascript
 - generator
