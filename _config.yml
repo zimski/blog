@@ -1,6 +1,6 @@
 # main text of home
 name: Chadda chakib
-bio: Je code et je reve
+bio: Slapping the keyboard until something good happens!
 
 # twitter summary info
 description: A blog about technology and stuff related
@@ -57,7 +57,7 @@ authors:
         bio: Slapping the keyboard until something good happens!
         external-image: false
         picture: assets/images/profile.png
-        twitter: zimski
+        twitter: zimski1990
 # do you want a larger site? change the option below
 # options: [normal, large] | default: normal
 # normal = 560px / large = 810px
