@@ -53,12 +53,12 @@ Okay, now it's a little bit more complicated but stay with me, you will see that
 
 In the remote host, we have a server listening on `3000 UDP port` and my goal is to send him some `UDP` packets from my host.
 
-I can't use the only the ssh tunneling because it doesn't support the UDP trafic, and my hero is `socat` will save me.
+I can't use the only the ssh tunneling because it doesn't support the UDP trafic, and my hero `socat` will save me.
 
 We will tell to socat to:
 
 ### In My laptop
-We will use `socat` to create a Little server listening on `UDP` packets on the 3000 port, when socat receive udp packets, it will encapsulate theme in `TCP` packets and send them to 1111 port.
+We will use `socat` to create a Little server listening on `UDP` packets on the 3000 port, when socat receive udp packets, it will encapsulate them in `TCP` packets and send them to 1111 port.
 
 The ssh tunnel listening on this port will transport my packets to the the my target server.
 

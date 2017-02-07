@@ -49,7 +49,7 @@ description: Diving in the javascript generator super powers
 
 # JS functions behavior
 
-*Main notice*: Any new function can't interrupt a ruining function
+*Main notice*: Any new function can't interrupt a running function
 
 ```js
 setTimeout(function(){
