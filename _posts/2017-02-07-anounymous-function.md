@@ -2,7 +2,7 @@
 title: "Anonymous Functions in JavaScript"
 layout: post
 date: 2017-02-07 22:48
-image: /assets/images/anony.jpg
+image: /assets/images/post_cover/resized_anony.jpg
 headerImage: true
 tag:
 - javascript

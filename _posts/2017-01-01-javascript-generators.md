@@ -2,7 +2,7 @@
 title: "JavaScript generators"
 layout: post
 date: 2017-01-01 22:48
-image: /assets/images/js_gen.jpg
+image: /assets/images/post_cover/resized_js_gen.jpg
 headerImage: true
 tag:
 - javascript

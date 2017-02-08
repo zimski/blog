@@ -2,7 +2,7 @@
 title: "SSH tunneling TCP & UDP"
 layout: post
 date: 2017-01-25 22:48
-image: /assets/images/ssh_tunnel2.jpg
+image: /assets/images/post_cover/resized_ssh_tunnel.jpg
 headerImage: true
 tag:
 - system
