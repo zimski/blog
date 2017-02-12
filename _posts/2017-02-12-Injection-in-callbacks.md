@@ -78,8 +78,8 @@ duration(function(done){
    console.log('the data saving lasted ' + done() + ' ms');
   });
 }, 'storage.save.time')
-// => the saving lasted 13 ms
-// the metric is sent too
+// => the data saving lasted 13 ms
+// the metric of timing is sent too with the right time
 ```
 
 That's it !
