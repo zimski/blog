@@ -2,7 +2,7 @@
 title: "Write clean bash scripts ;)"
 layout: post
 date: 2017-03-31 22:48
-image: /assets/images/post_cover/bash_clean_resized.jpg
+image: /assets/images/post_cover/clean_bash.jpg
 headerImage: true
 tag:
 - shell

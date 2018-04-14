@@ -2,7 +2,7 @@
 title: "S.O.L.I.D principals, The WHY ?"
 layout: post
 date: 2018-03-16 20:12
-image: /assets/images/post_cover/solid_resized.jpg
+image: /assets/images/post_cover/oo_solid.jpg
 headerImage: true
 tag:
 - code
