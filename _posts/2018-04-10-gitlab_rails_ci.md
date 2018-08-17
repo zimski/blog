@@ -17,7 +17,7 @@ description: The complete guide to setup a CI/CD for Rails 5+ on Gitlab
 # Continuous Integration/Deployment for Rails on Gitlab
 ![Gitlab piplines](/assets/images/pipline_green.png){:class="img-responsive"}
 
-This blog post will explain you how to setup Gitlab to run all your rails tests
+This blog post will explain to you how to setup Gitlab to run all your rails tests
 and system tests and deploy everything to your staging app if everything is OK.
 
 I will use Heroku to deploy my staging App.
@@ -26,7 +26,7 @@ I will use Heroku to deploy my staging App.
 
 ## The build Stage
 
-The build will contains:
+The build will contain:
 - Installation of dependencies
 - Database setup
 - Precompile of assets (assets & webpacker)
@@ -36,13 +36,13 @@ The build will contains:
 
 ### The Integration tests
 
-The stage will be responsible for running all integration tests, basicaly this
+The stage will be responsible for running all integration tests, basically this
 will run `bundle exec rails test`
 
 ### The system tests
 
 The most exciting and important thing to have in my CI.
-The system test are very useful to test a complex UI requiring a massive use
+The system tests are very useful to test a complex UI requiring a massive use
 of Javascript (React of Vue app) and interacting with external services like `Google
 Map Places`.
 
@@ -53,12 +53,13 @@ The interesting side here is that we will use a docker to embed our `Selenium
 Chrome browser` to run our browser.
 
 ## The staging deploy Stage
-This is an easy step, it will be responsible to deploy the app in heroku and
+This is an easy step, it will be responsible for deploying the app in Heroku and
 call the database migration.
 
 
 # The GITLAB-CI
-Gitlab offer to everyone ( and I am highly gratefull to them) a way to define
+
+Gitlab offer to everyone ( and I am highly grateful to them) a way to define
 how the code will be tested / deployed by creating a `.gitlab-ci` in the root of
 your project hosted at gitlab.
 
@@ -67,25 +68,27 @@ your continues integration for `FREE`.
 
 ## How this works
 
-The CI follow this simple steps:
-1. booting one or several containers aka `services` that your have specified in the `.gitlab-ci`
-2. copy your repo the main container.
+The CI follow these simple steps:
+1. Booting one or several containers aka `services` that you have specified in the `.gitlab-ci`
+2. Copy your repo the main container.
 3. Run all scripts wanted in it
 
 ## Use the cache to speedup the CI
-Gitlab allow you to cache folder and files and use them for the next jobs.
+Gitlab allows you to cache folders and files and use them for the next jobs.
 In our case, caching all the `gems` and `node_modules` will save us several minutes.
 
 ## Use artifacts to debug our tests
 When a system tests fails, the test will save a `screenshots` in a temp folder.
-The `artifacts` make possible for us to save those files and attach them to the
+The `artifacts` make possible for us to save those files and tie them to the
 job.
-this will help us a lot when we want to debug a failing system tests.
+This will help us a lot when we want to debug a failing system tests.
 
 
+--------------------
 # Let's do it
 
-## The build
+## 1. The build
+
 
 ### Prepare the build container
 
@@ -131,7 +134,7 @@ docker push registry.gitlab.com/[ORG]/[REPO]/[CONTAINER]:v1 # v1 is my version t
 If you have `ADSL` internet connection with a poor uploading speed, you can go
 take a nap ;)
 
-After the push terminate, your are good to go to the next step.
+After the push terminates, you are good to go to the next step.
 
 ### The build script
 This is the main script in the gitlab-ci file
@@ -214,8 +217,7 @@ test:
   database: test_db
 ```
 
-
-## The Integration Tests script
+## 2. The Integration Tests script
 No need more explanation for this
 
 ```yaml
@@ -236,13 +238,13 @@ integration_test:
 
 ```
 
-## The System Tests script
+## 3. The System Tests script
 
 The infrastructure to make possible the system test is quite interesting.
 To run the test we should start a browser (in a container) and fetch the page from the puma
-server (from am other container).
+server (from an other container).
 
-`The capibara` should be able to control the selenium driver.
+`The capybara` should be able to control the selenium driver.
 
 ```yaml
 system_test:
@@ -270,7 +272,7 @@ system_test:
 We should tell to capybara to use the right `IP` instead of `localhost`, because here we have the browser
 and the server in two different containers.
 
-in the `environment/test.rb`, add this lines
+in the `environment/test.rb`, add these lines
 
 ```ruby
   net = Socket.ip_address_list.detect{|addr| addr.ipv4_private? }
@@ -282,7 +284,7 @@ in the `environment/test.rb`, add this lines
   Capybara.server_host = ip
 ```
 
-## Staging deployment
+## 4. Staging deployment
 
 This will deploy our code if `build` and `tests` succeed.
 
@@ -305,15 +307,18 @@ The `HEROKU_API_KEY` is stored in a safe place in the settings of the project
 
 ![Gitlab CI variables](/assets/images/gitlab_variables.png){:class="img-responsive"}
 
-For more informations about this [Gitlab variables documentation](https://docs.gitlab.com/ee/ci/variables/)
+For more information about this, go to [Gitlab variables documentation](https://docs.gitlab.com/ee/ci/variables/)
 
+
+-------------
 # Conclusion
+
 `Gitlab` is an amazing project and provide a very nice spot where everything is well integrated to provide
 us an very good coding experience.
 
 I hope that the migration to `Google compute engine` will provide a better robustness to the project.
 
-Longue vie à Gitlab !!
+> Longue vie à Gitlab !!
 
 The complete `Gitlab CI`
 <script src="https://gitlab.com/snippets/1745898.js"></script>
