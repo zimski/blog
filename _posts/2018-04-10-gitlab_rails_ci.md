@@ -1,7 +1,7 @@
 ---
 title: "The complete guide to setup a CI/CD for Rails 5+ on Gitlab"
 layout: post
-date: 2018-04-12 20:12
+date: 2018-08-15 20:12
 image: /assets/images/post_cover/gitlab_ci_rails.jpg
 headerImage: true
 tag:
@@ -52,10 +52,11 @@ The main command executed in this stage is `bundle exec rails test:system`.
 The interesting side here is that we will use a docker to embed our `Selenium
 Chrome browser` to run our browser.
 
-## The staging deploy Stage
+## The deploy Stage
 This is an easy step, it will be responsible for deploying the app in Heroku and
 call the database migration.
 
+-----------------------
 
 # The GITLAB-CI
 
@@ -241,10 +242,14 @@ integration_test:
 ## 3. The System Tests script
 
 The infrastructure to make possible the system test is quite interesting.
+
 To run the test we should start a browser (in a container) and fetch the page from the puma
 server (from an other container).
 
 `The capybara` should be able to control the selenium driver.
+
+
+![System tests & containers](/assets/images/system_tests.png){:class="img-responsive"}
 
 ```yaml
 system_test:
@@ -283,6 +288,14 @@ in the `environment/test.rb`, add these lines
   Capybara.server_port = 8200
   Capybara.server_host = ip
 ```
+
+The `artifacts` is useful to see the scrennshots when your test fails
+
+The `rails system test` will take screenshots and save them to `tmp/screenshots`
+
+![System tests & scrennshots](/assets/images/screenshots.png){:class="img-responsive"}
+
+As you can see, the screenshots are stored and attached to job, Neat!
 
 ## 4. Staging deployment
 
