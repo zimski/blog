@@ -327,7 +327,7 @@ For more information about this, go to [Gitlab variables documentation](https://
 # Conclusion
 
 `Gitlab` is an amazing project and provide a very nice spot where everything is well integrated to provide
-us an very good coding experience.
+us a very good coding experience.
 
 I hope that the migration to `Google compute engine` will provide a better robustness to the project.
 
