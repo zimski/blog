@@ -17,12 +17,13 @@ description: The complete guide to setup a CI/CD for Rails 5+ on Gitlab
 # Continuous Integration/Deployment for Rails on Gitlab
 ![Gitlab piplines](/assets/images/pipline_green.png){:class="img-responsive"}
 
-This blog post will explain to you how to setup Gitlab to run all your rails tests
-and system tests and deploy everything to your staging app if everything is OK.
+In this blog post, we will through the necessary steps to setup Gitlab in order
+to run Rails build, tests & deployment if everything will be okay.
+I will put a particular attention on `rails system test` and how to make them works.
 
-I will use Heroku to deploy my staging App.
+We will use Heroku to deploy our staging App.
 
-# What we will achieve ?
+# What will we achieve ?
 
 ## The build Stage
 
@@ -32,56 +33,58 @@ The build will contain:
 - Precompile of assets (assets & webpacker)
 
 
-## The Tests Stage
+## The Test Stage
 
 ### The Integration tests
-
-The stage will be responsible for running all integration tests, basically this
-will run `bundle exec rails test`
+In this stage, we will run all our integration tests, which basically turn to
+run:
+`bundle exec rails test`
 
 ### The system tests
 
-The most exciting and important thing to have in my CI.
-The system tests are very useful to test a complex UI requiring a massive use
+This is the most exciting and important part to have in our CI.
+The system tests are very useful in term of testing complex UI requiring a massive use
 of Javascript (React of Vue app) and interacting with external services like `Google
 Map Places`.
 
-The system test will do clicks and filling inputs like a regular user on your App.
+The system test will mimic a regular user by clicking and filling inputs like a regular user on our App.
 The main command executed in this stage is `bundle exec rails test:system`.
 
-The interesting side here is that we will use a docker to embed our `Selenium
-Chrome browser` to run our browser.
+The interacting fact in this case is the use of container to embed the `Selenium
+Chrome browser` to run real browser to fetch and tests our frontend.
 
 ## The deploy Stage
-This is an easy step, it will be responsible for deploying the app in Heroku and
-call the database migration.
+This is an easy step, we will deploy our application to the staging environment.
 
 -----------------------
 
 # The GITLAB-CI
 
-Gitlab offer to everyone ( and I am highly grateful to them) a way to define
-how the code will be tested / deployed by creating a `.gitlab-ci` in the root of
-your project hosted at gitlab.
+Gitlab offer to everyone ( and we should be grateful to them for all the work
+that have be done) a recipe that define how the code will be tested / deployed
+and all the services needed for these tasks.
+All the instructions are stored in `.gitlab-ci` present in the root of our repo.
 
-This offer your a *centralized* and an *easy way* to manage your source code and
-your continues integration for `FREE`.
+This offer us a *centralized* and an *easy way* to manage our source code and
+our continues integration for `FREE`.
 
-## How this works
+## How does it works
 
 The CI follow these simple steps:
 1. Booting one or several containers aka `services` that you have specified in the `.gitlab-ci`
-2. Copy your repo the main container.
+2. Copy your repo in the main container.
 3. Run all scripts wanted in it
 
 ## Use the cache to speedup the CI
-Gitlab allows you to cache folders and files and use them for the next jobs.
+Gitlab allows us to cache folders and files and use them for the next jobs.
+No need to recompile all dependencies or even download them.
 In our case, caching all the `gems` and `node_modules` will save us several minutes.
 
 ## Use artifacts to debug our tests
-When a system tests fails, the test will save a `screenshots` in a temp folder.
-The `artifacts` make possible for us to save those files and tie them to the
-job.
+When the system tests fails, the test will save the `screenshots` in a `temp` folder.
+
+The `artifacts` make possible for us to save those files and tie them to the job.
+
 This will help us a lot when we want to debug a failing system tests.
 
 
@@ -90,16 +93,17 @@ This will help us a lot when we want to debug a failing system tests.
 
 ## 1. The build
 
-
 ### Prepare the build container
 
 The build will be executed in a container, so we should have a container with
-all the dependencies needed, for the modern rails app we should have:
+all the dependencies needed bundled inside.
+
+For the modern rails app we should include:
 - Ruby
 - Node + Yarn
 - Some system libraries
 
-There is my `dockerfile`
+Here is the `dockerfile`
 
 ```bash
 FROM ruby:2.4.3
@@ -114,7 +118,8 @@ RUN rm -rf /var/lib/apt/lists/*
 
 Easy yay !
 
-Now, we should publish this container to use it.
+Now, we should publish this container to enable GitlabCI to use it.
+
 `Gitlab` provide for us a container registry ! for free again !
 
 So we just need to push this container in the project registry.
@@ -135,10 +140,10 @@ docker push registry.gitlab.com/[ORG]/[REPO]/[CONTAINER]:v1 # v1 is my version t
 If you have `ADSL` internet connection with a poor uploading speed, you can go
 take a nap ;)
 
-After the push terminates, you are good to go to the next step.
+Once the push finishes, we are good to go to the next step.
 
 ### The build script
-This is the main script in the gitlab-ci file
+This is the main build part in the gitlab-ci file
 
 ```yaml
 image: "registry.gitlab.com/[ORG]/[REPO]/[CONTAINER]:v1"
@@ -180,13 +185,11 @@ build:
   - RAILS_ENV=test bundle exec rails assets:precompile
 ```
 
-So I am using my image created before to instantiate a container and run my
-build script inside.
+So we are using the previously created image to host the build.
 
-I have added to my project a `config/database.gitlab` to replace the original
-config and use the right host, username and password to connect to my database.
-
-The database is mounted by the service config
+We should add to the project a `config/database.gitlab` to replace the original
+database config and use custom host and credential to connect to postgres
+container booted by the GitlabCI.
 
 ```yaml
   services:
@@ -203,7 +206,7 @@ will use the variables defined before to setup the database
 ```
 
 The `config/database.gitlab` will tell our rails app how to connect to the
-database, so before the app boots, the `database.yml` will be replaced the
+database, so before the app boots, the `database.yml` will be replaced by the
 custom one.
 
 ```yaml
@@ -243,10 +246,8 @@ integration_test:
 
 The infrastructure to make possible the system test is quite interesting.
 
-To run the test we should start a browser (in a container) and fetch the page from the puma
-server (from an other container).
-
-`The capybara` should be able to control the selenium driver.
+To run the test we should start a browser (in a container) and fetch the page
+from the rails server (from an other container).
 
 
 ![System tests & containers](/assets/images/system_tests.png){:class="img-responsive"}
@@ -277,7 +278,7 @@ system_test:
 We should tell to capybara to use the right `IP` instead of `localhost`, because here we have the browser
 and the server in two different containers.
 
-in the `environment/test.rb`, add these lines
+In the `environment/test.rb`, add these lines
 
 ```ruby
   net = Socket.ip_address_list.detect{|addr| addr.ipv4_private? }
@@ -289,8 +290,6 @@ in the `environment/test.rb`, add these lines
   Capybara.server_host = ip
 ```
 
-The `artifacts` is useful to see the scrennshots when your test fails
-
 The `rails system test` will take screenshots and save them to `tmp/screenshots`
 
 ![System tests & scrennshots](/assets/images/screenshots.png){:class="img-responsive"}
@@ -299,7 +298,7 @@ As you can see, the screenshots are stored and attached to job, Neat!
 
 ## 4. Staging deployment
 
-This will deploy our code if `build` and `tests` succeed.
+This will deploy our code if `build` and `tests` stages succeed.
 
 ```
 deploy_staging:
@@ -326,12 +325,15 @@ For more information about this, go to [Gitlab variables documentation](https://
 -------------
 # Conclusion
 
-`Gitlab` is an amazing project and provide a very nice spot where everything is well integrated to provide
-us a very good coding experience.
+`Gitlab` is an amazing project and provide a very nice spot where everything is
+well integrated, the coding experience is enhanced.
 
-I hope that the migration to `Google compute engine` will provide a better robustness to the project.
+Finally, let's hope that the migration to `Google compute engine` will provide a
+better robustness to the project and less issues.
 
 > Longue vie à Gitlab !!
 
-The complete `Gitlab CI`
+Cheers!
+
+Here is the complete `Gitlab CI`
 <script src="https://gitlab.com/snippets/1745898.js"></script>
